@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import serializers, generics
 
 from catalog.models import Datasource, Owner, Dataset, Field
@@ -19,19 +18,29 @@ class OwnerSerializer(serializers.ModelSerializer):
 class FieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = Field
-        fields = ("name", "description")
+        fields = ("id", "name", "description")
 
 
 class DatasetSerializer(serializers.ModelSerializer):
-    owner = OwnerSerializer()
-    datasource = DatasourceSerializer()
-    fields = FieldSerializer(many=True)
+    owner = OwnerSerializer(read_only=True)
+    datasource = DatasourceSerializer(read_only=True)
+    fields = FieldSerializer(many=True, read_only=True)
 
     class Meta:
         model = Dataset
         fields = '__all__'
 
 
-class DatasetListAPIView(generics.ListAPIView):
+class DatasetListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = DatasetSerializer
     queryset = Dataset.objects.all()
+
+
+class DatasetRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = DatasetSerializer
+    queryset = Dataset.objects.all()
+
+
+class FieldUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = FieldSerializer
+    queryset = Field.objects.all()
