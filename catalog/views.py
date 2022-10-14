@@ -1,6 +1,13 @@
 from rest_framework import serializers, generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from catalog.models import Datasource, Owner, Dataset, Field
+
+
+@api_view(["GET"])
+def health_check(request):
+    return Response("Healthy!")
 
 
 class DatasourceSerializer(serializers.ModelSerializer):
